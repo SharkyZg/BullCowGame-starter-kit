@@ -6,8 +6,11 @@
 void UBullCowCartridge::BeginPlay() // When the game starts
 {
     Super::BeginPlay();
+
+    TArray<FString> Words;
     const FString WordListPath = FPaths::ProjectContentDir() / TEXT("WordLists/HiddenWordList.txt");
     FFileHelper::LoadFileToStringArray(Words, *WordListPath);
+    ValidWords = GetValidWords(Words);
     SetupGame();
 }
 
@@ -18,13 +21,13 @@ void UBullCowCartridge::OnInput(const FString &Input) // When the player hits en
 
 void UBullCowCartridge::SetupGame()
 {
-    int32 random_number = CreateRandNumber(Words.Num());
-    hidden_word = Words[random_number];
+    int32 random_number = CreateRandNumber(ValidWords.Num());
+    hidden_word = ValidWords[random_number];
     number_of_lives = hidden_word.Len();
     bGameOver = false;
     ClearScreen();
     PrintLine(TEXT("Hey ho let's go"));
-    PrintLine(TEXT("Number of possible words is %i"), Words.Num());
+    PrintLine(TEXT("Number of possible words is %i"), ValidWords.Num());
     PrintLine(TEXT("Random word number is %i"), random_number);
     PrintLine(TEXT("Hidden word is %s"), *hidden_word);
     PrintLine(TEXT("Guess the %i letter word!"), hidden_word.Len());
@@ -100,3 +103,13 @@ int32 UBullCowCartridge::CreateRandNumber(int32 NumberOfWords) const
     int32 randomNumber = (rand() % NumberOfWords) + 1;
     return randomNumber;
 };
+
+TArray<FString> UBullCowCartridge::GetValidWords(TArray<FString> WordList) const
+{
+    TArray<FString> ValidWords;
+    for (FString const &Word : WordList)
+    {
+        if (Word.Len() >= 4 && Word.Len() <= 8) ValidWords.Emplace(Word);
+    }
+    return ValidWords;
+}

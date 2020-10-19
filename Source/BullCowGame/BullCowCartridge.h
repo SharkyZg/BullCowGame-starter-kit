@@ -19,11 +19,13 @@ public:
 	void ProcessGuess(FString Guess);
 	bool IsIsogram(FString Word) const;
 	int32 CreateRandNumber(int32 NumberOfWords) const;
+	TArray<FString> GetValidWords(TArray<FString> WordList) const;
+
 
 	// Your declarations go below!
 private:
 	FString hidden_word;
 	int32 number_of_lives;
 	bool bGameOver;
-	TArray<FString> Words;
+	TArray<FString> ValidWords;
 };
