@@ -41,7 +41,7 @@ void UBullCowCartridge::EndGame()
     bGameOver = true;
 }
 
-void UBullCowCartridge::ProcessGuess(FString Guess)
+void UBullCowCartridge::ProcessGuess(const FString& Guess)
 {
     if (bGameOver)
     {
@@ -85,7 +85,7 @@ void UBullCowCartridge::ProcessGuess(FString Guess)
     // Check User input
 }
 
-bool UBullCowCartridge::IsIsogram(FString Word) const
+bool UBullCowCartridge::IsIsogram(const FString& Word) const
 {
     std::map<char, int> counter;
     for (char const &c : Word)
@@ -97,19 +97,20 @@ bool UBullCowCartridge::IsIsogram(FString Word) const
     return true;
 }
 
-int32 UBullCowCartridge::CreateRandNumber(int32 NumberOfWords) const
+int32 UBullCowCartridge::CreateRandNumber(const int32 NumberOfWords) const
 {
     srand((unsigned)time(0));
     int32 randomNumber = (rand() % NumberOfWords) + 1;
     return randomNumber;
 };
 
-TArray<FString> UBullCowCartridge::GetValidWords(TArray<FString> WordList) const
+TArray<FString> UBullCowCartridge::GetValidWords(const TArray<FString>& WordList) const
 {
-    TArray<FString> ValidWords;
+    TArray<FString> Words;
     for (FString const &Word : WordList)
     {
-        if (Word.Len() >= 4 && Word.Len() <= 8) ValidWords.Emplace(Word);
+        if (Word.Len() >= 4 && Word.Len() <= 8 && IsIsogram(Word))
+            Words.Emplace(Word);
     }
-    return ValidWords;
+    return Words;
 }
