@@ -16,10 +16,13 @@ public:
 	virtual void OnInput(const FString &Input) override;
 	void SetupGame();
 	void EndGame();
+	void ProcessGuess(FString Guess);
+	bool IsIsogram(FString Word) const;
 
 	// Your declarations go below!
 private:
 	FString hidden_word;
 	int32 number_of_lives;
 	bool bGameOver;
+	TArray<FString> Words;
 };
