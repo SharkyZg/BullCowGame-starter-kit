@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "BullCowCartridge.h"
 #include <map>
+#include <ctime>
 
 void UBullCowCartridge::BeginPlay() // When the game starts
 {
@@ -17,11 +18,15 @@ void UBullCowCartridge::OnInput(const FString &Input) // When the player hits en
 
 void UBullCowCartridge::SetupGame()
 {
-    hidden_word = TEXT("cakes");
+    int32 random_number = CreateRandNumber(Words.Num());
+    hidden_word = Words[random_number];
     number_of_lives = hidden_word.Len();
     bGameOver = false;
     ClearScreen();
     PrintLine(TEXT("Hey ho let's go"));
+    PrintLine(TEXT("Number of possible words is %i"), Words.Num());
+    PrintLine(TEXT("Random word number is %i"), random_number);
+    PrintLine(TEXT("Hidden word is %s"), *hidden_word);
     PrintLine(TEXT("Guess the %i letter word!"), hidden_word.Len());
     PrintLine(TEXT("You have %i lives."), hidden_word.Len());
     PrintLine(TEXT("Type in guess and press enter"));
@@ -88,3 +93,10 @@ bool UBullCowCartridge::IsIsogram(FString Word) const
     }
     return true;
 }
+
+int32 UBullCowCartridge::CreateRandNumber(int32 NumberOfWords) const
+{
+    srand((unsigned)time(0));
+    int32 randomNumber = (rand() % NumberOfWords) + 1;
+    return randomNumber;
+};
