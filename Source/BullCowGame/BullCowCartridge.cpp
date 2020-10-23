@@ -6,7 +6,6 @@
 void UBullCowCartridge::BeginPlay() // When the game starts
 {
     Super::BeginPlay();
-
     TArray<FString> Words;
     const FString WordListPath = FPaths::ProjectContentDir() / TEXT("WordLists/HiddenWordList.txt");
     FFileHelper::LoadFileToStringArray(Words, *WordListPath);
@@ -41,7 +40,7 @@ void UBullCowCartridge::EndGame()
     bGameOver = true;
 }
 
-void UBullCowCartridge::ProcessGuess(const FString& Guess)
+void UBullCowCartridge::ProcessGuess(const FString &Guess)
 {
     if (bGameOver)
     {
@@ -78,14 +77,18 @@ void UBullCowCartridge::ProcessGuess(const FString& Guess)
         else
         {
             number_of_lives--;
-            PrintLine(TEXT("Fail!, you have %i lives left"), number_of_lives);
+
+            GetBullCows(Guess);
+
+            PrintLine(TEXT("You have %i Bulls and %i Cows"), Count.Bulls, Count.Cows);
+            PrintLine(TEXT("Fail, you have %i lives left"), number_of_lives);
         };
     }
 
     // Check User input
 }
 
-bool UBullCowCartridge::IsIsogram(const FString& Word) const
+bool UBullCowCartridge::IsIsogram(const FString &Word) const
 {
     std::map<char, int> counter;
     for (char const &c : Word)
@@ -100,11 +103,11 @@ bool UBullCowCartridge::IsIsogram(const FString& Word) const
 int32 UBullCowCartridge::CreateRandNumber(const int32 NumberOfWords) const
 {
     srand((unsigned)time(0));
-    int32 randomNumber = (rand() % NumberOfWords) + 1;
+    int32 randomNumber = (rand() % (NumberOfWords - 1)) + 1;
     return randomNumber;
 };
 
-TArray<FString> UBullCowCartridge::GetValidWords(const TArray<FString>& WordList) const
+TArray<FString> UBullCowCartridge::GetValidWords(const TArray<FString> &WordList) const
 {
     TArray<FString> Words;
     for (FString const &Word : WordList)
@@ -113,4 +116,26 @@ TArray<FString> UBullCowCartridge::GetValidWords(const TArray<FString>& WordList
             Words.Emplace(Word);
     }
     return Words;
+}
+
+void UBullCowCartridge::GetBullCows(const FString &Guess)
+{
+    Count.Bulls = 0;
+    Count.Cows = 0;
+    for (int32 i = 0; i < Guess.Len(); i++)
+    {
+        if (Guess[i] == hidden_word[i])
+        {
+            Count.Bulls++;
+            continue;
+        }
+        for (char const &c : hidden_word)
+        {
+            if (Guess[i] == c)
+            {
+                Count.Cows++;
+                break;
+            }
+        }
+    }
 }
